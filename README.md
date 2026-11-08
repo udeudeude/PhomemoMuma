@@ -17,6 +17,7 @@ Print PDFs, ordinary documents exported as PDFs, photos, diagrams, and plain tex
   2. **Trim blank margins** crops whitespace before shrinking, preserving layout at a slightly larger scale.
   3. **Readable text** extracts selectable PDF text and rewraps it for the narrow paper. This is experimental; intricate tables, typography, and multicolumn layouts will not retain their original structure. Scanned PDFs generally lack selectable text.
 - Monochrome thresholding for text/diagrams, dithering for photographs, contrast adjustment, rotation, and adjustable margins.
+- Photos have a dedicated picker and one-tap **Upright**, **Sideways right**, **Sideways left**, and **Upside down** controls. **Maximize print size** automatically rotates landscape photos to run along the paper feed, keeping their proportions. Photo import defaults to dithering, with crisp black-and-white conversion still available. These controls are committed and statically validated, but are awaiting an on-device print test.
 - Actual 384-pixel monochrome preview plus PNG export.
 - One page at a time is rasterized and transmitted in row chunks, avoiding loading an entire multipage document as one giant image.
 
