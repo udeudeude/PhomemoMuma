@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111827"><meta name="description" content="Print ordinary PDFs, images, and documents on a Phomemo M02 from your iPhone using Bluefy.">
+<title>PhomemoMuma · Document printer</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="stylesheet" href="./muma.css">
+<link rel="stylesheet" href="./documents.css">
+</head>
+<body>
+<header class="masthead"><div><div class="eyebrow">IPHONE DOCUMENT PRINTING · M02</div><h1>Phomemo<span>Muma</span></h1></div><div class="connect-group"><span id="connection-status" class="status">Not connected</span><button type="button" id="connect" class="primary">Connect M02</button></div></header>
+<main class="workspace documents-workspace">
+<section class="editor">
+<div class="section-head"><h2>Print a document</h2><span class="subtle">From iPhone Files</span></div>
+<div class="card">
+  <label class="picker" for="document-file"><span class="picker-icon">↑</span><strong>Choose a PDF, image, or text file</strong><span>Files · Photos · Downloads</span></label>
+  <input id="document-file" type="file" accept=".pdf,application/pdf,image/*,.txt,.md,.csv,text/plain" hidden>
+  <p id="filename" class="file-meta">No file selected</p>
+  <p class="hint">No document is uploaded. Conversion happens locally in this browser.</p>
+</div>
+<div class="card">
+  <h3 class="card-title">Page selection</h3>
+  <p id="page-summary" class="subtle">Open a document to see its pages.</p>
+  <div class="three-fields">
+    <label>Preview page<input type="number" min="1" value="1" step="1" id="preview-page" disabled></label>
+    <label>First to print<input type="number" min="1" value="1" step="1" id="page-from" disabled></label>
+    <label>Last to print<input type="number" min="1" value="1" step="1" id="page-to" disabled></label>
+  </div>
+</div>
+<div class="card">
+  <h3 class="card-title">How should it fit?</h3>
+  <div class="radio-stack">
+    <label><input type="radio" name="layout" value="fit" checked><span><strong>Whole page</strong><small>Exact page layout, reduced to the paper width. Small text may be illegible.</small></span></label>
+    <label><input type="radio" name="layout" value="crop"><span><strong>Trim blank margins</strong><small>Preserve layout, enlarge the actual content.</small></span></label>
+    <label><input type="radio" name="layout" value="reflow"><span><strong>Readable text</strong><small>For PDFs with selectable text. Rewraps at an ordinary reading size; loses complex layouts.</small></span></label>
+  </div>
+  <div class="two-fields">
+    <label>Page rotation<select id="rotation"><option value="0">Original</option><option value="90">90° clockwise</option><option value="180">180°</option><option value="270">90° counterclockwise</option></select></label>
+    <label>Paper margin<select id="margin"><option value="4">Small</option><option value="12" selected>Normal</option><option value="22">Large</option></select></label>
+  </div>
+</div>
+<div class="card">
+  <h3 class="card-title">Print quality</h3>
+  <div class="two-fields">
+    <label>Image treatment<select id="method"><option value="sharp" selected>Crisp text and diagrams</option><option value="dither">Dither for photographs</option></select></label>
+    <label>Print density<select id="density"><option value="2">2</option><option value="3">3</option><option value="4" selected>4 (working baseline)</option><option value="5">5</option><option value="6">6</option></select></label>
+  </div>
+  <label class="slide-label">Contrast <input type="range" min="-70" max="70" value="0" id="contrast"><output id="contrast-value">0</output></label>
+  <p class="hint">Density above or below 4 needs printer testing. Print appearance varies with paper and battery charge.</p>
+</div>
+<div class="card actions">
+  <button id="print-one" type="button" class="primary big" disabled>Print this page</button>
+  <button id="print-range" type="button" class="quiet" disabled>Print selected pages</button>
+  <button id="save-image" type="button" class="quiet" disabled>Save preview image</button>
+  <button id="cancel" type="button" class="text-button" hidden>Stop after current data chunk</button>
+  <progress id="progress" max="100" value="0" hidden></progress>
+  <p id="message" role="status" aria-live="polite" class="hint">Open a document to begin.</p>
+</div>
+</section>
+<section class="proof">
+<div class="section-head"><h2>Print preview</h2><span id="dimensions" class="subtle">384 printable dots</span></div>
+<div class="paper-frame"><canvas id="preview" width="384" height="140" aria-label="Actual monochrome print preview"></canvas></div>
+<p class="hint">Preview shows the exact black-and-white pixels queued for the printer. The M02 cannot reproduce color or the fine print of a full-size page.</p>
+<details class="log-panel"><summary>Technical log</summary><pre id="log">Ready.</pre><button id="copy-log" type="button" class="quiet">Copy report</button></details>
+<nav class="links"><a href="./app.html">Write text or add a photo</a><a href="./print.html">Print-density calibration</a><a href="./diagnostic.html">Bluetooth diagnostic</a><a href="https://github.com/udeudeude/PhomemoMuma">Source code</a></nav>
+</section>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
+<script src="./documents.js" defer></script>
+</body></html>
