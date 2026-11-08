@@ -1,8 +1,8 @@
 {
-  "name": "PhomemoMuma Receipt Studio",
+  "name": "PhomemoMuma Document Printer",
   "short_name": "PhomemoMuma",
-  "description": "Independent M02 thermal receipt printer for Bluefy",
-  "start_url": "./app.html",
+  "description": "Print PDFs, photos, and text files directly to Phomemo M02 through Bluefy",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f0f2f5",
