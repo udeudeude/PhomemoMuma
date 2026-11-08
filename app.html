@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<meta name="description" content="Independent receipt printing for the Phomemo M02 from Bluefy on iPhone.">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="stylesheet" href="./muma.css">
+<title>PhomemoMuma · Receipt studio</title>
+</head>
+<body>
+<header class="masthead">
+  <div><div class="eyebrow">INDEPENDENT THERMAL PRINTING</div><h1>Phomemo<span>Muma</span></h1></div>
+  <div class="connect-group"><span id="connection-status" class="status">Disconnected</span><button id="connect" class="primary" type="button">Connect M02</button></div>
+</header>
+<main class="workspace">
+<section class="editor" aria-label="Receipt editor">
+  <div class="section-head"><h2>Compose</h2><span class="subtle">384-dot paper width</span></div>
+  <div class="card">
+    <label for="receipt-text" class="field-label">Receipt text</label>
+    <textarea id="receipt-text" rows="7" spellcheck="true" placeholder="Type or paste anything you want to print."></textarea>
+    <div class="button-row"><button type="button" class="quiet" id="import-text">Import text file</button><input id="text-file" type="file" accept="text/plain,.txt,.md,.csv" hidden><button type="button" class="quiet" id="paste-text">Paste from clipboard</button></div>
+    <div class="three-fields">
+      <label>Type size <select id="font-size"><option value="18">Compact</option><option value="24" selected>Regular</option><option value="32">Large</option></select></label>
+      <label>Font <select id="font-family"><option value="sans" selected>Sans serif</option><option value="serif">Serif</option><option value="mono">Monospaced</option></select></label>
+      <label>Align <select id="align"><option value="left">Left</option><option value="center">Center</option><option value="right">Right</option></select></label>
+    </div>
+    <label class="check"><input id="bold" type="checkbox" checked> Bold</label>
+  </div>
+  <div class="card">
+    <div class="section-head small"><h3>Photo or artwork</h3><span class="subtle">Optional</span></div>
+    <div class="button-row"><button type="button" id="image-add" class="quiet">Choose image</button><button type="button" id="image-remove" class="quiet" disabled>Remove image</button></div>
+    <input id="image-file" type="file" accept="image/*" hidden>
+    <p id="image-name" class="subtle">No image selected. Photos are processed on your phone.</p>
+    <div id="image-controls" hidden>
+      <div class="two-fields"><label>Placement <select id="image-place"><option value="above">Above text</option><option value="below">Below text</option></select></label><label>Image width <select id="image-width"><option value="100">Full</option><option value="75">75%</option><option value="50">50%</option></select></label></div>
+      <label>Image conversion <select id="image-mode"><option value="dither" selected>Dither (photographs)</option><option value="threshold">Black and white (drawings)</option></select></label>
+      <label>Contrast <input id="image-contrast" type="range" min="-80" max="80" value="0"><output id="contrast-output">0</output></label>
+    </div>
+  </div>
+  <div class="card">
+    <div class="section-head small"><h3>Paper and printer</h3></div>
+    <div class="two-fields"><label>Side margins <select id="margin"><option value="8">Narrow</option><option value="16" selected>Normal</option><option value="26">Wide</option></select></label><label>Density <select id="density"><option value="2">2</option><option value="3">3</option><option value="4" selected>4 (original working)</option><option value="5">5</option><option value="6">6</option></select></label></div>
+    <p class="hint">Density settings other than 4 still need your physical calibration. The printing protocol uses the M02's previously successful Bluetooth channel.</p>
+    <label class="check"><input id="footer-line" type="checkbox" checked> Add ending rule</label>
+  </div>
+  <div class="card actions">
+    <button type="button" id="print" class="primary big" disabled>Connect printer to print</button>
+    <button type="button" id="save-png" class="quiet">Save receipt image</button>
+    <button type="button" id="reset" class="text-button">Clear draft</button>
+    <progress id="print-progress" value="0" max="100" hidden></progress>
+    <p id="message" role="status" aria-live="polite" class="hint">Draft saved automatically on this device.</p>
+  </div>
+</section>
+<section class="proof" aria-label="Receipt preview">
+  <div class="section-head"><h2>Paper preview</h2><span id="dimensions" class="subtle">384 dots wide</span></div>
+  <div class="paper-frame"><canvas id="preview" width="384" height="160" aria-label="Full receipt preview"></canvas></div>
+  <p class="hint">What you see is the monochrome bitmap used for printing. Paper length adjusts to fit the content.</p>
+  <details class="log-panel"><summary>Technical log</summary><pre id="log">Ready.</pre><button type="button" id="copy-log" class="quiet">Copy log</button></details>
+  <nav class="links" aria-label="Project links"><a href="./print.html">Density calibration</a><a href="./">Bluetooth diagnostic</a><a href="https://github.com/udeudeude/PhomemoMuma">Source</a></nav>
+</section>
+</main>
+<script src="./muma.js" defer></script>
+</body></html>
