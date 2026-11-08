@@ -15,7 +15,8 @@
 <div class="card">
   <label class="picker" for="document-file"><span class="picker-icon">↑</span><strong>Choose a PDF, image, or text file</strong><span>Files · Photos · Downloads</span></label>
   <input id="document-file" type="file" accept=".pdf,application/pdf,image/*,.txt,.md,.csv,text/plain" hidden>
-  <div class="button-row"><button id="sample-pdf" type="button" class="quiet">Open sample PDF (2 pages)</button></div><p id="filename" class="file-meta">No file selected</p>
+  <input id="photo-file" type="file" accept="image/*" hidden>
+  <div class="button-row"><button id="photo-choose" type="button" class="quiet">Choose photo</button><button id="sample-pdf" type="button" class="quiet">Open sample PDF (2 pages)</button></div><p id="filename" class="file-meta">No file selected</p>
   <p class="hint">No document is uploaded. Conversion happens locally in this browser.</p>
 </div>
 <div class="card">
@@ -34,7 +35,19 @@
     <label><input type="radio" name="layout" value="crop"><span><strong>Trim blank margins</strong><small>Preserve layout, enlarge the actual content.</small></span></label>
     <label><input type="radio" name="layout" value="reflow"><span><strong>Readable text</strong><small>For PDFs with selectable text. Rewraps at an ordinary reading size; loses complex layouts.</small></span></label>
   </div>
-  <div class="two-fields">
+  <div id="photo-orientation" class="image-orientation" hidden>
+    <h3 class="card-title">Photo orientation</h3>
+    <p class="subtle">A sideways photo uses more paper length and can print larger. The preview shows the exact direction on the roll.</p>
+    <div class="orientation-grid" role="group" aria-label="Photo orientation">
+      <button id="photo-upright" type="button" class="orientation-choice active" aria-pressed="true" data-photo-rotate="0"><span class="orientation-symbol" aria-hidden="true">▯</span><span>Upright</span></button>
+      <button id="photo-right" type="button" class="orientation-choice" aria-pressed="false" data-photo-rotate="90"><span class="orientation-symbol sideways" aria-hidden="true">▯</span><span>Sideways right</span></button>
+      <button id="photo-left" type="button" class="orientation-choice" aria-pressed="false" data-photo-rotate="270"><span class="orientation-symbol sideways" aria-hidden="true">▯</span><span>Sideways left</span></button>
+      <button id="photo-down" type="button" class="orientation-choice" aria-pressed="false" data-photo-rotate="180"><span class="orientation-symbol inverted" aria-hidden="true">▯</span><span>Upside down</span></button>
+    </div>
+    <button id="photo-best" type="button" class="quiet">Maximize print size</button>
+    <p id="photo-orientation-hint" class="hint">Upright keeps the photo's existing orientation.</p>
+  </div>
+  <div class="two-fields" id="document-orientation">
     <label>Page rotation<select id="rotation"><option value="0">Original</option><option value="90">90° clockwise</option><option value="180">180°</option><option value="270">90° counterclockwise</option></select></label>
     <label>Paper margin<select id="margin"><option value="4">Small</option><option value="12" selected>Normal</option><option value="22">Large</option></select></label>
   </div>
