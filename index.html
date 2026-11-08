@@ -19,7 +19,7 @@
   <div class="button-row"><button id="photo-choose" type="button" class="quiet">Choose photo</button><button id="sample-pdf" type="button" class="quiet">Open sample PDF (2 pages)</button></div><p id="filename" class="file-meta">No file selected</p>
   <p class="hint">No document is uploaded. Conversion happens locally in this browser.</p>
 </div>
-<div class="card">
+<div class="card" id="page-selection">
   <h3 class="card-title">Page selection</h3>
   <p id="page-summary" class="subtle">Open a document to see its pages.</p>
   <div class="three-fields">
@@ -33,7 +33,7 @@
   <div class="radio-stack">
     <label><input type="radio" name="layout" value="fit" checked><span><strong>Whole page</strong><small>Exact page layout, reduced to the paper width. Small text may be illegible.</small></span></label>
     <label><input type="radio" name="layout" value="crop"><span><strong>Trim blank margins</strong><small>Preserve layout, enlarge the actual content.</small></span></label>
-    <label><input type="radio" name="layout" value="reflow"><span><strong>Readable text</strong><small>For PDFs with selectable text. Rewraps at an ordinary reading size; loses complex layouts.</small></span></label>
+    <label id="reflow-choice"><input type="radio" name="layout" value="reflow"><span><strong>Readable text</strong><small>For PDFs with selectable text. Rewraps at an ordinary reading size; loses complex layouts.</small></span></label>
   </div>
   <div id="photo-orientation" class="image-orientation" hidden>
     <h3 class="card-title">Photo orientation</h3>
