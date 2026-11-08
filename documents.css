@@ -10,3 +10,6 @@
 .orientation-choice .orientation-symbol.inverted{transform:rotate(180deg)}
 #photo-best{width:100%}
 #photo-orientation-hint{margin:7px 0 0}
+
+/* Explicitly honor hidden state even on flex layout controls. */
+[hidden]{display:none!important}
