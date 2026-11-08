@@ -1,4 +1,4 @@
-const CACHE='phomemomuma-documents-v2';
+const CACHE='phomemomuma-documents-v3';
 const ASSETS=['./','./index.html','./documents.html','./documents.js','./documents.css','./muma.css','./manifest.webmanifest','./diagnostic.html','./print.html','./app.html','./muma.js'];
 const PDF_SCRIPTS=[
 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',
