@@ -60,6 +60,48 @@ function loadImage(file) {
     img.src = url;
   });
 }
+
+function makeSamplePDF() {
+  const streams = [
+    [
+      '0 0 0 rg',
+      'BT /F1 23 Tf 60 714 Td (PhomemoMuma PDF Test) Tj ET',
+      'BT /F1 12 Tf 60 675 Td (Page 1 of 2 - source size: US Letter) Tj ET',
+      'BT /F1 12 Tf 60 640 Td (This line tests ordinary PDF text rendering.) Tj ET',
+      'BT /F1 9 Tf 60 618 Td (This smaller text will be difficult to read if the full page is reduced.) Tj ET',
+      '2 w 0 0 0 RG 60 575 m 552 575 l S',
+      'BT /F1 13 Tf 60 540 Td (Try Whole page, then Trim blank margins.) Tj ET',
+      'BT /F1 13 Tf 60 515 Td (Try Readable text for larger letters.) Tj ET'
+    ].join('\\n'),
+    [
+      '0 0 0 rg',
+      'BT /F1 26 Tf 70 710 Td (Second PDF page) Tj ET',
+      'BT /F1 14 Tf 70 668 Td (This confirms multipage navigation.) Tj ET',
+      '2 w 0 0 0 RG 70 635 m 540 635 l S',
+      'BT /F1 14 Tf 70 599 Td (Nothing is sent to the printer until Print.) Tj ET'
+    ].join('\\n')
+  ];
+  const objects = [
+    '<< /Type /Catalog /Pages 2 0 R >>',
+    '<< /Type /Pages /Kids [3 0 R 4 0 R] /Count 2 >>',
+    '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 5 0 R >> >> /Contents 6 0 R >>',
+    '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 5 0 R >> >> /Contents 7 0 R >>',
+    '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>',
+    '<< /Length ' + streams[0].length + ' >>\\nstream\\n' + streams[0] + '\\nendstream',
+    '<< /Length ' + streams[1].length + ' >>\\nstream\\n' + streams[1] + '\\nendstream'
+  ];
+  let pdf = '%PDF-1.4\\n';
+  const offsets = [0];
+  for (let i=0;i<objects.length;i++) {
+    offsets.push(pdf.length);
+    pdf += (i+1)+' 0 obj\\n'+objects[i]+'\\nendobj\\n';
+  }
+  const xref = pdf.length;
+  pdf += 'xref\\n0 '+(objects.length+1)+'\\n0000000000 65535 f \\n';
+  for (let i=1;i<offsets.length;i++) pdf += String(offsets[i]).padStart(10,'0')+' 00000 n \\n';
+  pdf += 'trailer\\n<< /Size '+(objects.length+1)+' /Root 1 0 R >>\\nstartxref\\n'+xref+'\\n%%EOF\\n';
+  return new File([pdf], 'PhomemoMuma-sample.pdf', {type:'application/pdf'});
+}
 async function loadDocument(file) {
   if (!file) return;
   if (busy) return;
@@ -70,7 +112,7 @@ async function loadDocument(file) {
     if (file.type === 'application/pdf' || /\.pdf$/i.test(file.name)) {
       if (!window.pdfjsLib) throw new Error('PDF renderer unavailable. Connect to the internet once and reload this page in Bluefy.');
       window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDF_WORKER;
-      const loading = window.pdfjsLib.getDocument({ data: new Uint8Array(await file.arrayBuffer()), isEvalSupported: false });
+      const loading = window.pdfjsLib.getDocument({ data: new Uint8Array(await file.arrayBuffer()), isEvalSupported: false, enableScripting: false });
       const pdf = await loading.promise;
       next = { kind:'pdf', pdf, pages:pdf.numPages, name:file.name };
     } else if (file.type.startsWith('image/') || /\.(png|jpe?g|webp|gif|bmp)$/i.test(file.name)) {
@@ -323,6 +365,7 @@ function savePreview(){
   }catch(e){status('Image export failed: '+errorText(e));}
 }
 blankPreview();
+$('sample-pdf').addEventListener('click',()=>loadDocument(makeSamplePDF()));
 $('document-file').addEventListener('change',async event=>{
   const file=event.target.files&&event.target.files[0];
   await loadDocument(file);
