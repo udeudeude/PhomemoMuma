@@ -126,6 +126,8 @@ async function loadDocument(file) {
     if (sequence !== previewSequence) return;
     source = next;
     lastPreview = null;
+    // Photographs need tonal dithering; crisp text and line art use thresholding.
+    $('method').value = source.kind === 'image' ? 'dither' : 'sharp';
     // New photos preserve their existing upright orientation unless the user changes it.
     photoRotate = 0;
     refreshPhotoOrientation();
