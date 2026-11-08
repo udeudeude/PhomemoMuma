@@ -35,7 +35,8 @@ function updateControls() {
   $('photo-choose').disabled = busy;
   $('cancel').hidden = !busy;
   $('connection-status').textContent = connected() ? 'Connected: ' + device.name : 'Not connected';
-  $('print-one').textContent = busy ? 'Sending print data…' : 'Print this page';
+  $('print-one').textContent = busy ? 'Sending print data…' : (source && source.kind==='image' ? 'Print image' : 'Print this page');
+  $('print-range').hidden = !!(source && source.pages === 1);
 }
 function errorText(e) { return e && (e.message || e.name) ? (e.message || e.name) : String(e); }
 function pageNumber() {
@@ -133,6 +134,12 @@ async function loadDocument(file) {
     refreshPhotoOrientation();
     $('photo-orientation').hidden = source.kind !== 'image';
     $('document-orientation').hidden = source.kind === 'image';
+    $('page-selection').hidden = source.pages === 1;
+    $('reflow-choice').hidden = source.kind !== 'pdf';
+    // Reflow only applies to selectable PDF text; other formats use fit or trim.
+    if (source.kind !== 'pdf' && document.querySelector('input[name="layout"]:checked').value === 'reflow') {
+      document.querySelector('input[name="layout"][value="fit"]').checked = true;
+    }
     $('photo-choose').textContent = 'Choose another photo';
     $('filename').textContent = file.name;
     setPages(source.pages);
