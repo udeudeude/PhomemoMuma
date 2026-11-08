@@ -70,7 +70,7 @@ async function loadDocument(file) {
     if (file.type === 'application/pdf' || /\.pdf$/i.test(file.name)) {
       if (!window.pdfjsLib) throw new Error('PDF renderer unavailable. Connect to the internet once and reload this page in Bluefy.');
       window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDF_WORKER;
-      const loading = window.pdfjsLib.getDocument({ data: new Uint8Array(await file.arrayBuffer()) });
+      const loading = window.pdfjsLib.getDocument({ data: new Uint8Array(await file.arrayBuffer()), isEvalSupported: false });
       const pdf = await loading.promise;
       next = { kind:'pdf', pdf, pages:pdf.numPages, name:file.name };
     } else if (file.type.startsWith('image/') || /\.(png|jpe?g|webp|gif|bmp)$/i.test(file.name)) {
