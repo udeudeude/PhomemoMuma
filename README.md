@@ -36,13 +36,21 @@ A conventional iPhone **Share → Print → Select Printer** workflow is **not c
 
 For a webpage, first create a PDF using the iOS share/print/export facilities and save it in Files. Then open the PDF in PhomemoMuma.
 
+**To verify PDF rendering without a printer:** open the homepage in Bluefy and tap **Open sample PDF (2 pages)**. Compare the whole-page, margin-trimmed, and readable-text modes; switch to page 2. No paper or Bluetooth connection is needed for this check.
+
 ## Technical status
 
 **Verified on physical hardware:** Bluefy can discover and connect to a user's M02 via Bluetooth service `FF00` and writable characteristic `FF02`. A short 384-dot raster print and a longer variable-height text print both succeeded.
 
-**Awaiting physical verification:** The new PDF/document workflow, high-length multi-page printing, and the density comparison. Images and PDFs are processed within the browser without being uploaded to a service.
+**Awaiting physical verification:** The new PDF/document workflow, high-length multi-page printing, and the density comparison. The built-in two-page PDF fixture has been structurally checked, but the browser rendering path has not yet been tested in Bluefy. Images and PDFs are processed within the browser without being uploaded to a service.
 
 The PDF renderer uses Mozilla PDF.js, currently referenced by its pinned version on a content-delivery network. A network connection may be necessary the first time the renderer is fetched; offline reuse is cached where the browser supports it. Do not assume offline PDF printing is guaranteed until it has been tested in Bluefy.
+
+## Validation
+
+Run `node scripts/check.mjs` to check JavaScript syntax, user-interface references, the sample PDF structure, Bluetooth hooks, and cached assets. GitHub Actions runs the same checks on repository changes. These are static checks, not a substitute for real Bluefy or printer testing.
+
+The pinned legacy PDF renderer is invoked with `isEvalSupported: false` and `enableScripting: false` while a fully verified upgrade is pending. The renderer is served from a content-delivery network, so an initial network connection may be required.
 
 ## Utility pages
 
