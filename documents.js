@@ -9,6 +9,7 @@ const PDF_WORKER = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.w
 const preview = $('preview');
 let source = null, device = null, writer = null, busy = false, abortRequested = false;
 let previewSequence = 0, lastPreview = null, lastPreviewPage = 0, lastPreviewSettings = '';
+let photoRotate = 0;
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 function log(s) { $('log').textContent += '\n' + s; }
 function status(s) { $('message').textContent = s; }
@@ -16,7 +17,7 @@ function connected() { return !!(device && device.gatt && device.gatt.connected 
 function options() {
   return {
     layout: document.querySelector('input[name="layout"]:checked').value,
-    rotate: Number($('rotation').value),
+    rotate: (source && source.kind === 'image') ? photoRotate : Number($('rotation').value),
     margin: Number($('margin').value),
     method: $('method').value,
     contrast: Number($('contrast').value),
@@ -30,6 +31,8 @@ function updateControls() {
   $('save-image').disabled = !lastPreview || busy;
   $('connect').disabled = busy;
   $('document-file').disabled = busy;
+  $('photo-file').disabled = busy;
+  $('photo-choose').disabled = busy;
   $('cancel').hidden = !busy;
   $('connection-status').textContent = connected() ? 'Connected: ' + device.name : 'Not connected';
   $('print-one').textContent = busy ? 'Sending print data…' : 'Print this page';
@@ -123,6 +126,12 @@ async function loadDocument(file) {
     if (sequence !== previewSequence) return;
     source = next;
     lastPreview = null;
+    // New photos preserve their existing upright orientation unless the user changes it.
+    photoRotate = 0;
+    refreshPhotoOrientation();
+    $('photo-orientation').hidden = source.kind !== 'image';
+    $('document-orientation').hidden = source.kind === 'image';
+    $('photo-choose').textContent = 'Choose another photo';
     $('filename').textContent = file.name;
     setPages(source.pages);
     log('Loaded ' + file.name + ' (' + source.pages + ' pages)');
@@ -131,6 +140,25 @@ async function loadDocument(file) {
   } catch(e) { log('Open error: ' + errorText(e)); status('Could not open file: ' + errorText(e)); }
   updateControls();
 }
+
+function refreshPhotoOrientation(){
+  for(const button of document.querySelectorAll('[data-photo-rotate]')){
+    const isCurrent=Number(button.dataset.photoRotate)===photoRotate;
+    button.classList.toggle('active',isCurrent);
+    button.setAttribute('aria-pressed',String(isCurrent));
+  }
+  const img=source && source.kind==='image' ? source.image : null;
+  const original = img ? (img.naturalWidth>img.naturalHeight ? 'landscape' : img.naturalWidth<img.naturalHeight ? 'portrait' : 'square') : 'unknown';
+  const note=photoRotate===0?'Upright (as photographed).':photoRotate===180?'Turned upside down.':photoRotate===90?'Turned clockwise to run along the paper.':'Turned counterclockwise to run along the paper.';
+  $('photo-orientation-hint').textContent=img ? 'Source: '+img.naturalWidth+' × '+img.naturalHeight+' pixels ('+original+'). '+note : note;
+}
+function setPhotoRotation(degrees){
+  if(!source || source.kind!=='image' || busy)return;
+  photoRotate=degrees;
+  refreshPhotoOrientation();
+  updatePreview();
+}
+
 function sourceBoundingBox(canvas, crop) {
   if (!crop) return {x:0,y:0,w:canvas.width,h:canvas.height};
   const ctx = canvas.getContext('2d',{willReadFrequently:true});
@@ -366,6 +394,20 @@ function savePreview(){
 }
 blankPreview();
 $('sample-pdf').addEventListener('click',()=>loadDocument(makeSamplePDF()));
+$('photo-choose').addEventListener('click',()=>{$('photo-file').click();});
+$('photo-file').addEventListener('change',async event=>{
+  const file=event.target.files&&event.target.files[0];
+  await loadDocument(file);
+  event.target.value='';
+});
+for(const button of document.querySelectorAll('[data-photo-rotate]')){
+  button.addEventListener('click',()=>setPhotoRotation(Number(button.dataset.photoRotate)));
+}
+$('photo-best').addEventListener('click',()=>{
+  if(!source || source.kind!=='image')return;
+  // Rotate a wide image: its long edge then runs down the roll and receives more dots.
+  setPhotoRotation(source.image.naturalWidth>source.image.naturalHeight ? 90 : 0);
+});
 $('document-file').addEventListener('change',async event=>{
   const file=event.target.files&&event.target.files[0];
   await loadDocument(file);
