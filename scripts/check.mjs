@@ -81,6 +81,15 @@ check('Entry point and offline asset links are internally consistent', () => {
   }
 });
 
+check('Photo orientation controls and image dithering are available', () => {
+  for (const angle of [0,90,180,270]) assert.ok(html.includes('data-photo-rotate="'+angle+'"'));
+  assert.ok(html.includes('id="photo-best"'));
+  assert.ok(html.includes('id="photo-file"'));
+  assert.match(js, /source\.kind === 'image' \? 'dither' : 'sharp'/);
+  assert.match(js, /source\.image\.naturalWidth>source\.image\.naturalHeight \? 90 : 0/);
+  assert.match(js, /x\.rotate\(settings\.rotate\*Math\.PI\/180\)/);
+});
+
 check('Printer has known density controls and no untested calibration required to load PDFs', () => {
   assert.ok(html.includes('value="4" selected'));
   assert.ok(html.includes('Open sample PDF'));
