@@ -72,14 +72,14 @@ function makeSamplePDF() {
       '2 w 0 0 0 RG 60 575 m 552 575 l S',
       'BT /F1 13 Tf 60 540 Td (Try Whole page, then Trim blank margins.) Tj ET',
       'BT /F1 13 Tf 60 515 Td (Try Readable text for larger letters.) Tj ET'
-    ].join('\\n'),
+    ].join('\n'),
     [
       '0 0 0 rg',
       'BT /F1 26 Tf 70 710 Td (Second PDF page) Tj ET',
       'BT /F1 14 Tf 70 668 Td (This confirms multipage navigation.) Tj ET',
       '2 w 0 0 0 RG 70 635 m 540 635 l S',
       'BT /F1 14 Tf 70 599 Td (Nothing is sent to the printer until Print.) Tj ET'
-    ].join('\\n')
+    ].join('\n')
   ];
   const objects = [
     '<< /Type /Catalog /Pages 2 0 R >>',
@@ -87,19 +87,19 @@ function makeSamplePDF() {
     '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 5 0 R >> >> /Contents 6 0 R >>',
     '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 5 0 R >> >> /Contents 7 0 R >>',
     '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>',
-    '<< /Length ' + streams[0].length + ' >>\\nstream\\n' + streams[0] + '\\nendstream',
-    '<< /Length ' + streams[1].length + ' >>\\nstream\\n' + streams[1] + '\\nendstream'
+    '<< /Length ' + streams[0].length + ' >>\nstream\n' + streams[0] + '\nendstream',
+    '<< /Length ' + streams[1].length + ' >>\nstream\n' + streams[1] + '\nendstream'
   ];
-  let pdf = '%PDF-1.4\\n';
+  let pdf = '%PDF-1.4\n';
   const offsets = [0];
   for (let i=0;i<objects.length;i++) {
     offsets.push(pdf.length);
-    pdf += (i+1)+' 0 obj\\n'+objects[i]+'\\nendobj\\n';
+    pdf += (i+1)+' 0 obj\n'+objects[i]+'\nendobj\n';
   }
   const xref = pdf.length;
-  pdf += 'xref\\n0 '+(objects.length+1)+'\\n0000000000 65535 f \\n';
-  for (let i=1;i<offsets.length;i++) pdf += String(offsets[i]).padStart(10,'0')+' 00000 n \\n';
-  pdf += 'trailer\\n<< /Size '+(objects.length+1)+' /Root 1 0 R >>\\nstartxref\\n'+xref+'\\n%%EOF\\n';
+  pdf += 'xref\n0 '+(objects.length+1)+'\n0000000000 65535 f \n';
+  for (let i=1;i<offsets.length;i++) pdf += String(offsets[i]).padStart(10,'0')+' 00000 n \n';
+  pdf += 'trailer\n<< /Size '+(objects.length+1)+' /Root 1 0 R >>\nstartxref\n'+xref+'\n%%EOF\n';
   return new File([pdf], 'PhomemoMuma-sample.pdf', {type:'application/pdf'});
 }
 async function loadDocument(file) {
